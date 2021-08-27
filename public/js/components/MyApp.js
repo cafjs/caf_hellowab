@@ -5,7 +5,8 @@ const rB = require('react-bootstrap');
 const AppActions = require('../actions/AppActions');
 const AppStatus = require('./AppStatus');
 const DisplayError = require('./DisplayError');
-const Example = require('./Example');
+const Iframe = require('./Iframe');
+const VideoModal = require('./VideoModal');
 
 const cE = React.createElement;
 
@@ -42,6 +43,10 @@ class MyApp extends React.Component {
                       ctx: this.props.ctx,
                       error: this.state.error
                   }),
+                  cE(VideoModal, {
+                      ctx: this.props.ctx,
+                      showVideoModal: this.state.showVideoModal
+                  }),
                   cE(rB.Panel, null,
                      cE(rB.Panel.Heading, null,
                         cE(rB.Panel.Title, null,
@@ -72,7 +77,7 @@ class MyApp extends React.Component {
                               cE(rB.Panel.Title, null, 'App')
                              ),
                            cE(rB.Panel.Body, null,
-                              cE(Example, {
+                              cE(Iframe, {
                                   ctx: this.props.ctx,
                                   wab: this.state.wab
                               })
