@@ -38,7 +38,7 @@ class MyApp extends React.Component {
     }
 
     render() {
-        return cE('div', {className: 'container-fluid'},
+        return cE('div', {className: 'container-fluid iframe-div'},
                   cE(DisplayError, {
                       ctx: this.props.ctx,
                       error: this.state.error
@@ -47,44 +47,10 @@ class MyApp extends React.Component {
                       ctx: this.props.ctx,
                       showVideoModal: this.state.showVideoModal
                   }),
-                  cE(rB.Panel, null,
-                     cE(rB.Panel.Heading, null,
-                        cE(rB.Panel.Title, null,
-                           cE(rB.Grid, {fluid: true},
-                              cE(rB.Row, null,
-                                 cE(rB.Col, {sm:1, xs:1},
-                                    cE(AppStatus, {
-                                        isClosed: this.state.isClosed
-                                    })
-                                   ),
-                                 cE(rB.Col, {
-                                     sm: 5,
-                                     xs:10,
-                                     className: 'text-right'
-                                 }, 'HelloWAB'),
-                                 cE(rB.Col, {
-                                     sm: 5,
-                                     xs:11,
-                                     className: 'text-right'
-                                 }, this.state.fullName)
-                                )
-                             )
-                          )
-                       ),
-                     cE(rB.Panel.Body, null,
-                        cE(rB.Panel, null,
-                           cE(rB.Panel.Heading, null,
-                              cE(rB.Panel.Title, null, 'App')
-                             ),
-                           cE(rB.Panel.Body, null,
-                              cE(Iframe, {
-                                  ctx: this.props.ctx,
-                                  wab: this.state.wab
-                              })
-                             )
-                          )
-                       )
-                    )
+                  cE(Iframe, {
+                      ctx: this.props.ctx,
+                      wab: this.state.wab
+                  })
                  );
     }
 };
