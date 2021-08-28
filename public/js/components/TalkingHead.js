@@ -54,17 +54,90 @@ class TalkingHead extends React.Component {
 
     constructor(props) {
         super(props);
+        this.onWindowResize = this.onWindowResize.bind(this);
+        this.animate = this.animate.bind(this);
+        this.frameId = null;
     }
 
+    onWindowResize() {
+        if (this.camera && this.renderer) {
+            this.camera.aspect = window.innerWidth / window.innerHeight;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+    }
+
+    animate() {
+        /* VideoTexture should set needsUpdate...
+        if (this.texture) {
+            this.texture.needsUpdate = true;
+        }
+        */
+        this.renderer.render(this.scene, this.camera);
+        this.frameId = window.requestAnimationFrame(this.animate);
+    }
+
+    componentDidMount() {
+        const canvas = document.getElementById('canvas-head');
+        this.renderer = new THREE.WebGLRenderer({
+            canvas,
+            alpha: true,
+            premultipliedAlpha: false
+        });
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+
+        this.camera = new THREE.PerspectiveCamera(
+            75, window.innerWidth / window.innerHeight, 0.1, 1000
+        );
+        this.camera.position.z = 5;
+
+        this.scene = new THREE.Scene();
+        this.scene.background = null; // Do I need this?
+
+        const video = document.getElementById('video-head');
+        this.texture = new THREE.VideoTexture(video);
+        this.texture.minFilter = THREE.LinearFilter;
+        this.texture.magFilter = THREE.LinearFilter;
+
+        const material = new THREE.ShaderMaterial({
+            transparent: true,
+            uniforms: {
+                map: {value: this.texture},
+                keyUV: { value: KEY_UV },
+                uvOffset: {value: [0.0, 0.0]},
+                similarity: { value: 0.7 },
+                smoothness: { value: 0.0 }
+            },
+            vertexShader: VERTEX_SHADER,
+            fragmentShader: FRAGMENT_SHADER
+        });
+
+        const geometry = new THREE.PlaneGeometry(16, 9);
+        const mesh = new THREE.Mesh(geometry, material);
+//        geometry.scale(0.4, 0.5, 0.5);
+        this.scene.add(mesh);
+
+        if (!this.frameId) {
+            this.frameId = window.requestAnimationFrame(this.animate);
+            window.addEventListener('resize', this.onWindowResize);
+        }
+    }
+
+    componentWillUnmount() {
+        this.frameId && cancelAnimationFrame(this.frameId);
+        this.frameId = null;
+        window.removeEventListener('resize', this.onWindowResize);
+    }
 
     render() {
-        return cE('div', {className: 'fixed-bottom-right'},
-                  cE('video', {width: 320,  height: 'auto', id: 'video-head',
-                               autoPlay: true,  loop: true,  muted: true},
-                     cE('source', {src: "171003D_002_2K.mp4",
-                                   type: 'video/mp4'})
-                    )
-                 );
+        return cE('div', null);/*cE('video', {className: 'fixed-bottom-right', display: 'none',
+                            ref: (videoRef) => this.videoRef = videoRef,
+                            width: '50%',  height: 'auto', id: 'video-head',
+                            autoPlay: true,  loop: true,  muted: true},
+                  cE('source', {src: "171003D_002_2K.mp4",
+                                type: 'video/mp4'})
+                 );*/
     }
 }
 
