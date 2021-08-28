@@ -11,7 +11,8 @@
        "react-dom" : "^16.6.0",
        "react-bootstrap" : "^0.32.4",
        "redux": "^3.7.2",
-       "keymirror": "^0.1.0"
+       "keymirror": "^0.1.0",
+       "three": "^0.131.3"
     },
     "devDependencies": {
         "browserify" : "^17.0.0",

@@ -11,3 +11,19 @@
     padding-right: 0px;
     padding-left: 0px;
 }
+
+.fixed-bottom-left {
+    position: fixed;
+    left: 0;
+    z-index: 1001;
+    margin-bottom: 0;
+    bottom:0;
+}
+
+.fixed-bottom-right {
+    position: fixed;
+    right: 0;
+    z-index: 1000;
+    margin-bottom: 0;
+    bottom:0;
+}

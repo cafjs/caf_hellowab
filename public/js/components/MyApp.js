@@ -7,6 +7,8 @@ const AppStatus = require('./AppStatus');
 const DisplayError = require('./DisplayError');
 const Iframe = require('./Iframe');
 const VideoModal = require('./VideoModal');
+const VideoMenu = require('./VideoMenu');
+const TalkingHead = require('./TalkingHead');
 
 const cE = React.createElement;
 
@@ -50,6 +52,12 @@ class MyApp extends React.Component {
                   cE(Iframe, {
                       ctx: this.props.ctx,
                       wab: this.state.wab
+                  }),
+                  cE(VideoMenu, {
+                      ctx: this.props.ctx
+                  }),
+                  cE(TalkingHead, {
+                      ctx: this.props.ctx
                   })
                  );
     }
