@@ -6,6 +6,9 @@ const cE = React.createElement;
 const AppActions = require('../actions/AppActions');
 const THREE = require('three');
 
+const FRUSTUM = 2;
+const VIDEO_ASPECT = 16/9; //720p, 1080p,...
+
 const RGBToUV = function(r,g,b) {
     const rN = r/255.0;
     const gN = g/255.0;
@@ -61,18 +64,21 @@ class TalkingHead extends React.Component {
 
     onWindowResize() {
         if (this.camera && this.renderer) {
-            this.camera.aspect = window.innerWidth / window.innerHeight;
+            const aspect = window.innerWidth / window.innerHeight;
+            this.camera.left = -FRUSTUM * aspect / 2;
+            this.camera.right = FRUSTUM * aspect / 2;
+            this.camera.top = FRUSTUM  / 2;
+            this.camera.bottom = -FRUSTUM / 2;
+            let xOffset = FRUSTUM*(VIDEO_ASPECT - 2*aspect)/4;
+            xOffset = xOffset > 0 ? 0 : xOffset;
+            this.camera.position.x = xOffset;
+
             this.camera.updateProjectionMatrix();
             this.renderer.setSize(window.innerWidth, window.innerHeight);
         }
     }
 
     animate() {
-        /* VideoTexture should set needsUpdate...
-        if (this.texture) {
-            this.texture.needsUpdate = true;
-        }
-        */
         this.renderer.render(this.scene, this.camera);
         this.frameId = window.requestAnimationFrame(this.animate);
     }
@@ -80,20 +86,28 @@ class TalkingHead extends React.Component {
     componentDidMount() {
         const canvas = document.getElementById('canvas-head');
         this.renderer = new THREE.WebGLRenderer({
+            antialias: true,
             canvas,
             alpha: true,
             premultipliedAlpha: false
         });
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-
-        this.camera = new THREE.PerspectiveCamera(
-            75, window.innerWidth / window.innerHeight, 0.1, 1000
+        const aspect = window.innerWidth / window.innerHeight;
+        this.camera = new THREE.OrthographicCamera(
+            -FRUSTUM * aspect / 2,
+            FRUSTUM * aspect / 2,
+            FRUSTUM / 2,
+            -FRUSTUM / 2,
+            1,
+            1000
         );
-        this.camera.position.z = 5;
-
+        this.camera.position.z = 10;
+        this.camera.position.y = FRUSTUM/4;
+        let xOffset = FRUSTUM*(VIDEO_ASPECT - 2*aspect)/4;
+        xOffset = xOffset > 0 ? 0 : xOffset;
+        this.camera.position.x = xOffset;
         this.scene = new THREE.Scene();
-        this.scene.background = null; // Do I need this?
 
         const video = document.getElementById('video-head');
         this.texture = new THREE.VideoTexture(video);
@@ -113,9 +127,9 @@ class TalkingHead extends React.Component {
             fragmentShader: FRAGMENT_SHADER
         });
 
-        const geometry = new THREE.PlaneGeometry(16, 9);
+        const geometry = new THREE.PlaneGeometry(VIDEO_ASPECT*FRUSTUM/2,
+                                                 FRUSTUM/2);
         const mesh = new THREE.Mesh(geometry, material);
-//        geometry.scale(0.4, 0.5, 0.5);
         this.scene.add(mesh);
 
         if (!this.frameId) {
@@ -131,13 +145,7 @@ class TalkingHead extends React.Component {
     }
 
     render() {
-        return cE('div', null);/*cE('video', {className: 'fixed-bottom-right', display: 'none',
-                            ref: (videoRef) => this.videoRef = videoRef,
-                            width: '50%',  height: 'auto', id: 'video-head',
-                            autoPlay: true,  loop: true,  muted: true},
-                  cE('source', {src: "171003D_002_2K.mp4",
-                                type: 'video/mp4'})
-                 );*/
+        return cE('div', null);
     }
 }
 
