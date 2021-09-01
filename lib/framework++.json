@@ -13,6 +13,16 @@
             "env" : {
                 "logLevel" : "process.env.LOG_LEVEL||WARN"
             }
+        },
+        {
+            "name": "cp2"
+        },
+        {
+            "name" : "daily",
+            "module": "caf_daily#plug",
+            "description": "Daily.co video plugin",
+            "env": {
+            }
         }
     ]
 }

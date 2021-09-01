@@ -2,6 +2,24 @@
     "name" : "ca",
     "components" : [
         {
+            "module": "caf_daily#plug_ca",
+            "name": "daily",
+            "description": "Manages a Daily.co service for a CA",
+            "env" : {
+                "maxRetries" : "$._.env.maxRetries",
+                "retryDelay" : "$._.env.retryDelay"
+            },
+            "components" : [
+                {
+                    "module": "caf_daily#proxy",
+                    "name": "proxy",
+                    "description": "Allows access to a Daily.co service",
+                    "env" : {
+                    }
+                }
+            ]
+        },
+        {
             "name": "handler",
             "components" : [
                 {
