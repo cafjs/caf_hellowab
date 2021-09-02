@@ -4,7 +4,8 @@ const AppConstants = require('../constants/AppConstants');
 
 const AppReducer = function(state, action) {
     if (typeof state === 'undefined') {
-        return  {showVideoModal: false, isClosed: false};
+        return  {showVideoModal: false, isKeyAPI: false, status: '',
+                 activeRoomExpires: 0, isClosed: false};
     } else {
         switch(action.type) {
         case AppConstants.APP_UPDATE:

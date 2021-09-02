@@ -47,7 +47,10 @@ class MyApp extends React.Component {
                   }),
                   cE(VideoModal, {
                       ctx: this.props.ctx,
-                      showVideoModal: this.state.showVideoModal
+                      showVideoModal: this.state.showVideoModal,
+                      isKeyAPI: this.state.isKeyAPI,
+                      status: this.state.status,
+                      activeRoomExpires: this.state.activeRoomExpires
                   }),
                   cE(Iframe, {
                       ctx: this.props.ctx,

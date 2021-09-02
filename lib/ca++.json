@@ -25,6 +25,7 @@
                 {
                     "name": "props",
                     "env" : {
+                        "timeoutMsec": "process.env.TIMEOUT_MSEC||15000"
                     }
                 }
             ]
