@@ -18,8 +18,9 @@ class VideoMenu extends React.Component {
 
     render() {
         return cE('div', {className: 'fixed-bottom-left'},
-                  cE(rB.Button, {bsStyle: 'link', bsSize: 'large',
-                                 onClick: this.handleMenu}, 'Settings')
+                  cE(rB.Button, {bsSize: 'large',
+                                 onClick: this.handleMenu},
+                     cE(rB.Glyphicon, {glyph: 'cog'}))
                  );
     }
 }

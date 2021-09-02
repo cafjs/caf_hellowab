@@ -5,6 +5,7 @@ const rB = require('react-bootstrap');
 const AppActions = require('../actions/AppActions');
 const AppStatus = require('./AppStatus');
 const DisplayError = require('./DisplayError');
+const DisplayURL = require('./DisplayURL');
 const Iframe = require('./Iframe');
 const VideoModal = require('./VideoModal');
 const VideoMenu = require('./VideoMenu');
@@ -44,6 +45,10 @@ class MyApp extends React.Component {
                   cE(DisplayError, {
                       ctx: this.props.ctx,
                       error: this.state.error
+                  }),
+                  cE(DisplayURL, {
+                      ctx: this.props.ctx,
+                      invite: this.state.invite
                   }),
                   cE(VideoModal, {
                       ctx: this.props.ctx,

@@ -22,6 +22,7 @@ class DisplayError extends React.Component {
                              animation: false},
                   cE(rB.Modal.Header, {
                       className : 'bg-warning text-warning',
+                      style: {textAlign: 'center'},
                       closeButton: true},
                      cE(rB.Modal.Title, null, 'Error')
                     ),

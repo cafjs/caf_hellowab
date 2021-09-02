@@ -24,10 +24,16 @@ class VideoModal extends React.Component {
         this.handleDuration = this.handleDuration.bind(this);
         this.submitStart = this.submitStart.bind(this);
         this.doStart = this.doStart.bind(this);
+        this.invite = this.invite.bind(this);
     }
 
     doDismiss(ev) {
         AppActions.setLocalState(this.props.ctx, {showVideoModal: false});
+    }
+
+    invite(event) {
+        this.doDismiss();
+        AppActions.setLocalState(this.props.ctx, {invite: true});
     }
 
     handleKeyAPI(ev) {
@@ -91,7 +97,8 @@ class VideoModal extends React.Component {
                              onHide: this.doDismiss,
                              animation: false},
                   cE(rB.Modal.Header, {
-                      className : 'bg-primary text-primary',
+                      className: 'bg-primary text-primary',
+                      style: {textAlign: 'center'},
                       closeButton: true
                   }, cE(rB.Modal.Title, null, 'Video Settings')),
 
@@ -102,7 +109,7 @@ class VideoModal extends React.Component {
                             cE(rB.Col, {sm: 4, xs: 12},
                                cE(rB.ControlLabel, null, keyMsg)
                               ),
-                            cE(rB.Col, {sm: 6, xs: 12},
+                            cE(rB.Col, {sm: 6, xs: 8},
                                cE(rB.FormControl, {
                                    type: 'text',
                                    value: this.state.keyAPI,
@@ -111,7 +118,7 @@ class VideoModal extends React.Component {
                                    onKeyPress: this.submitKeyAPI,
                                })
                               ),
-                            cE(rB.Col, {sm: 2, xs: 12},
+                            cE(rB.Col, {sm: 2, xs: 4},
                                cE(rB.Button, {onClick: this.doKeyAPI}, 'Update')
                               )
                            ),
@@ -120,14 +127,14 @@ class VideoModal extends React.Component {
                            cE(rB.Col, {sm: 4, xs: 12},
                               cE(rB.ControlLabel, null, 'Status')
                              ),
-                           cE(rB.Col, {sm: 6, xs: 12},
+                           cE(rB.Col, {sm: 6, xs: 8},
                               cE(rB.FormControl, {
                                   type: 'text',
                                   readOnly: true,
                                   value: this.props.status
                               })
                              ),
-                           cE(rB.Col, {sm: 2, xs: 12},
+                           cE(rB.Col, {sm: 2, xs: 4},
                               cE(rB.Button, {onClick: this.doReset,
                                              bsStyle: 'danger'}, 'Reset')
                              )
@@ -137,7 +144,7 @@ class VideoModal extends React.Component {
                            cE(rB.Col, {sm: 4, xs: 12},
                               cE(rB.ControlLabel, null, 'Expires at')
                              ),
-                           cE(rB.Col, {sm: 6, xs: 12},
+                           cE(rB.Col, {sm: 6, xs: 8},
                               cE(rB.FormControl, {
                                   type: 'text',
                                   readOnly: true,
@@ -147,7 +154,7 @@ class VideoModal extends React.Component {
                                       ''
                               })
                              ),
-                           cE(rB.Col, {sm: 2, xs: 12},
+                           cE(rB.Col, {sm: 2, xs: 4},
                               cE(rB.Button, {onClick: this.doStop}, 'Stop')
                              )
                            ),
@@ -156,7 +163,7 @@ class VideoModal extends React.Component {
                            cE(rB.Col, {sm: 4, xs: 12},
                               cE(rB.ControlLabel, null, 'Duration(sec)')
                              ),
-                           cE(rB.Col, {sm: 6, xs: 12},
+                           cE(rB.Col, {sm: 6, xs: 8},
                               cE(rB.FormControl, {
                                   value: this.state.duration,
                                   onChange: this.handleDuration,
@@ -164,15 +171,18 @@ class VideoModal extends React.Component {
                                   type: 'text'
                               })
                              ),
-                           cE(rB.Col, {sm: 2, xs: 12},
+                           cE(rB.Col, {sm: 2, xs: 4},
                               cE(rB.Button, {onClick: this.doStart}, 'Start')
                              )
                            ),
                      ].filter((x, i) => isVisible[i])
-
                        ),
                      cE(rB.Modal.Footer, null,
-                        cE(rB.Button, {onClick: this.doDismiss}, 'Dismiss')
+                        cE(rB.ButtonGroup, null,
+                           cE(rB.Button, {onClick: this.invite}, 'Invite'),
+                           cE(rB.Button, {onClick: this.doDismiss,
+                                          bsStyle: 'danger'}, 'Dismiss')
+                          )
                        )
                     )
                  );
