@@ -128,7 +128,8 @@ class VideoModal extends React.Component {
                               })
                              ),
                            cE(rB.Col, {sm: 2, xs: 12},
-                              cE(rB.Button, {onClick: this.doReset}, 'Reset')
+                              cE(rB.Button, {onClick: this.doReset,
+                                             bsStyle: 'danger'}, 'Reset')
                              )
                            ),
                          // 2
@@ -141,8 +142,8 @@ class VideoModal extends React.Component {
                                   type: 'text',
                                   readOnly: true,
                                   value: this.props.activeRoomExpires ?
-                                      (new Date(this.props.activeRoomExpires))
-                                      .toLocaleString() :
+                                      (new Date(this.props.activeRoomExpires *
+                                                1000)).toLocaleString() :
                                       ''
                               })
                              ),
@@ -158,7 +159,7 @@ class VideoModal extends React.Component {
                            cE(rB.Col, {sm: 6, xs: 12},
                               cE(rB.FormControl, {
                                   value: this.state.duration,
-                                  onChange: this.handleStart,
+                                  onChange: this.handleDuration,
                                   onKeyPress: this.submitStart,
                                   type: 'text'
                               })
