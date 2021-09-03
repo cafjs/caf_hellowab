@@ -5,6 +5,7 @@ const rB = require('react-bootstrap');
 const cE = React.createElement;
 const AppActions = require('../actions/AppActions');
 const THREE = require('three');
+const DailyVideo = require('./DailyVideo');
 
 const FRUSTUM = 2;
 const VIDEO_ASPECT = 16/9; //720p, 1080p,...
@@ -145,7 +146,7 @@ class TalkingHead extends React.Component {
     }
 
     render() {
-        return cE('div', null);
+        return cE(DailyVideo, null);
     }
 }
 
