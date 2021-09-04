@@ -69,7 +69,8 @@ const AppActions = {
 };
 
 const EXTERNAL_METHODS = [
-    'setDailyKey', 'startVideoSession', 'stopVideoSession', 'getState'
+    'setDailyKey', 'startVideoSession', 'stopVideoSession', 'getState',
+    'setTalkingHeadId'
 ];
 
 EXTERNAL_METHODS.forEach(function(x) {

@@ -61,6 +61,8 @@ class TalkingHead extends React.Component {
         this.onWindowResize = this.onWindowResize.bind(this);
         this.animate = this.animate.bind(this);
         this.frameId = null;
+        this.soundRef = React.createRef();
+        this.videoRef = React.createRef();
     }
 
     onWindowResize() {
@@ -110,7 +112,8 @@ class TalkingHead extends React.Component {
         this.camera.position.x = xOffset;
         this.scene = new THREE.Scene();
 
-        const video = document.getElementById('video-head');
+        // const video = document.getElementById('video-head');
+        const video = this.videoRef.current;
         this.texture = new THREE.VideoTexture(video);
         this.texture.minFilter = THREE.LinearFilter;
         this.texture.magFilter = THREE.LinearFilter;
@@ -146,7 +149,21 @@ class TalkingHead extends React.Component {
     }
 
     render() {
-        return cE(DailyVideo, null);
+        return cE(React.Fragment, null,
+                  cE('video', {autoPlay: true, muted: true, playsInline: true,
+                               ref: this.videoRef,
+                               style: {display: 'block', zIndex:-1000}}),
+                  cE('audio', {autoPlay: true, playsInline: true,
+                               ref: this.soundRef}),
+                  cE(DailyVideo, {
+                      ctx: this.props.ctx,
+                      soundRef: this.soundRef,
+                      videoRef: this.videoRef,
+                      userId: this.props.userId,
+                      activeRoomURL: this.props.activeRoomURL,
+                      roomStatus: this.props.status
+                  })
+                 );
     }
 }
 

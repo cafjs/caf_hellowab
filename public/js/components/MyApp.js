@@ -65,7 +65,10 @@ class MyApp extends React.Component {
                       ctx: this.props.ctx
                   }),
                   cE(TalkingHead, {
-                      ctx: this.props.ctx
+                      ctx: this.props.ctx,
+                      userId: this.state.userId,
+                      activeRoomURL: this.state.activeRoomURL,
+                      status: this.state.status,
                   })
                  );
     }
