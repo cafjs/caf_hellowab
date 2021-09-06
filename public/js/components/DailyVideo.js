@@ -27,11 +27,11 @@ class DailyVideo extends React.Component {
         this.callObject = null;
         this.state = {
             status: STATUS.IDLE,
-            myUserId: null,
             counter: 0
         };
         this.handleMeetingState = this.handleMeetingState.bind(this);
-        this.handleParticipantsChange = this.handleParticipantsChange(this);
+        this.handleParticipantsChange = this.handleParticipantsChange
+            .bind(this);
     }
 
     handleMeetingState(event)  {

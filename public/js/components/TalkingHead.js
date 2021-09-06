@@ -151,8 +151,7 @@ class TalkingHead extends React.Component {
     render() {
         return cE(React.Fragment, null,
                   cE('video', {autoPlay: true, muted: true, playsInline: true,
-                               ref: this.videoRef,
-                               style: {display: 'block', zIndex:-1000}}),
+                               ref: this.videoRef, className: 'video-canvas'}),
                   cE('audio', {autoPlay: true, playsInline: true,
                                ref: this.soundRef}),
                   cE(DailyVideo, {

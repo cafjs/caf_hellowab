@@ -38,3 +38,13 @@
     z-index: 1003;
     pointer-events: none;
 }
+
+.video-canvas {
+    width: 50%;
+    display: block;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: -1003;
+    pointer-events: none;
+}
