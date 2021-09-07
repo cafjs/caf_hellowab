@@ -50,7 +50,7 @@ class DailyVideo extends React.Component {
             console.log(event);
             this.setState({status: STATUS.ERROR});
             AppActions.setError(this.props.ctx,
-                                new Error('Cannot join, please reload'));
+                                new Error('Disconnected, please reload'));
             break;
         default:
             break;
