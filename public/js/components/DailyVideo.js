@@ -29,6 +29,10 @@ class DailyVideo extends React.Component {
             status: STATUS.IDLE,
             counter: 0
         };
+        this.videoDeviceId = null;
+        this.audioDeviceId = null;
+
+        this.updateInputs = this.updateInputs.bind(this);
         this.handleMeetingState = this.handleMeetingState.bind(this);
         this.handleParticipantsChange = this.handleParticipantsChange
             .bind(this);
@@ -58,8 +62,39 @@ class DailyVideo extends React.Component {
         this.setState({counter: this.state.counter + 1});
     }
 
+    updateInputs() {
+        let doUpdate = false;
+        if (this.props.videoDevice &&
+            (this.props.videoDevice.deviceId !== this.videoDeviceId)) {
+            this.videoDeviceId = this.props.videoDevice.deviceId;
+            doUpdate = true;
+        }
+
+        if (this.props.audioDevice &&
+            (this.props.audioDevice.deviceId !== this.audioDeviceId)) {
+            this.audioDeviceId = this.props.audioDevice.deviceId;
+            doUpdate = true;
+        }
+
+        if (doUpdate) {
+            const update = this.videoDeviceId ?
+                {videoDeviceId: this.videoDeviceId} :
+                {};
+
+            if (this.audioDeviceId) {
+                update['audioDeviceId'] = this.audioDeviceId;
+            }
+            this.callObject.setInputDevicesAsync(update);
+        }
+
+    }
+
     componentDidMount() {
-        this.callObject = DailyIframe.createCallObject();
+        this.callObject = DailyIframe.createCallObject({
+            audioSource: false,
+            videoSource: false
+        });
+        this.updateInputs();
         this.callObject.on('joined-meeting', this.handleMeetingState);
         this.callObject.on('left-meeting', this.handleMeetingState);
         this.callObject.on('error', this.handleMeetingState);
@@ -72,6 +107,8 @@ class DailyVideo extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
+        this.updateInputs();
+
         if ((this.props.roomStatus === ROOM_STATUS.STARTED) &&
             this.props.activeRoomURL) {
             /* IDLE->JOINING->JOINED->REGISTERED

@@ -1,3 +1,4 @@
+'use strict';
 const React = require('react');
 const rB = require('react-bootstrap');
 const cE = React.createElement;
@@ -24,6 +25,7 @@ class VideoModal extends React.Component {
         this.handleDuration = this.handleDuration.bind(this);
         this.submitStart = this.submitStart.bind(this);
         this.doStart = this.doStart.bind(this);
+        this.doDevice = this.doDevice.bind(this);
         this.invite = this.invite.bind(this);
     }
 
@@ -32,7 +34,7 @@ class VideoModal extends React.Component {
     }
 
     invite(event) {
-        this.doDismiss();
+        //this.doDismiss();
         AppActions.setLocalState(this.props.ctx, {invite: true});
     }
 
@@ -44,6 +46,24 @@ class VideoModal extends React.Component {
         if (ev.key === 'Enter') {
             ev.preventDefault();
             this.doKeyAPI(ev);
+        }
+    }
+
+    async doDevice(ev) {
+        // enumerateDevices() need user interaction
+        try {
+            // trigger user permission ack to enable enumeration
+            const stream = await navigator.mediaDevices
+                  .getUserMedia({audio: true, video: true});
+            const devicesInfo = await navigator.mediaDevices
+                  .enumerateDevices();
+            stream.getTracks().forEach((track) => track.stop());
+
+            AppActions.setLocalState(this.props.ctx, {devicesInfo});
+            AppActions.setLocalState(this.props.ctx, {showDevicesModal: true});
+        } catch (err) {
+            console.log(err);
+            AppActions.setError(this.props.ctx, err);
         }
     }
 
@@ -87,11 +107,18 @@ class VideoModal extends React.Component {
         const keyMsg = this.props.isKeyAPI ? 'Key OK' : 'Key Missing';
 
         const isVisible = (this.props.status === STATUS.STARTED ?
-                           [true, true, true, false] :
+                           [true, true, true, true, true, false] :
                            (this.props.status === STATUS.STOPPED ?
-                             [true, true, false, true] :
-                            [true, true, false, false])
+                            [true, true, true, true, false, true] :
+                            [true, true, true, true, false, false])
                           );
+
+        const isButtonVisible = (this.props.status === STATUS.STARTED ?
+                                 [true, true, true, true, false] :
+                                 (this.props.status === STATUS.STOPPED ?
+                                  [true, true, true, false, true] :
+                                  [true, true, true, false, false])
+                                );
 
         return cE(rB.Modal, {show: this.props.showVideoModal,
                              onHide: this.doDismiss,
@@ -105,6 +132,19 @@ class VideoModal extends React.Component {
                   cE(rB.Modal.Body, null,
                      cE(rB.Form, {horizontal: true}, [
                          // 0
+                         cE(rB.FormGroup, {controlId: 'statusId', key: 344},
+                           cE(rB.Col, {sm: 4, xs: 12},
+                              cE(rB.ControlLabel, null, 'Status')
+                             ),
+                           cE(rB.Col, {sm: 6, xs: 8},
+                              cE(rB.FormControl, {
+                                  type: 'text',
+                                  readOnly: true,
+                                  value: this.props.status
+                              })
+                             )
+                           ),
+                         // 1
                          cE(rB.FormGroup, {controlId: 'keyAPIId', key: 233},
                             cE(rB.Col, {sm: 4, xs: 12},
                                cE(rB.ControlLabel, null, keyMsg)
@@ -122,24 +162,42 @@ class VideoModal extends React.Component {
                                cE(rB.Button, {onClick: this.doKeyAPI}, 'Update')
                               )
                            ),
-                         // 1
-                         cE(rB.FormGroup, {controlId: 'statusId', key: 344},
-                           cE(rB.Col, {sm: 4, xs: 12},
-                              cE(rB.ControlLabel, null, 'Status')
-                             ),
-                           cE(rB.Col, {sm: 6, xs: 8},
-                              cE(rB.FormControl, {
-                                  type: 'text',
-                                  readOnly: true,
-                                  value: this.props.status
-                              })
-                             ),
-                           cE(rB.Col, {sm: 2, xs: 4},
-                              cE(rB.Button, {onClick: this.doReset,
-                                             bsStyle: 'danger'}, 'Reset')
-                             )
-                           ),
                          // 2
+                         cE(rB.FormGroup, {controlId: 'videoId', key: 99344},
+                            cE(rB.Col, {sm: 4, xs: 12},
+                               cE(rB.ControlLabel, null, 'Camera')
+                              ),
+                            cE(rB.Col, {sm: 6, xs: 8},
+                               cE(rB.FormControl, {
+                                   type: 'text',
+                                   readOnly: true,
+                                   value: this.props.videoDevice ?
+                                       this.props.videoDevice.text : 'None'
+                               })
+                              ),
+                            cE(rB.Col, {sm: 2, xs: 4},
+                               cE(rB.Button, {onClick: this.doDevice}, 'Update')
+                              )
+                           ),
+                         // 3
+                         cE(rB.FormGroup, {controlId: 'audioId', key: 99349},
+                            cE(rB.Col, {sm: 4, xs: 12},
+                               cE(rB.ControlLabel, null, 'Mic')
+                              ),
+                            cE(rB.Col, {sm: 6, xs: 8},
+                               cE(rB.FormControl, {
+                                   type: 'text',
+                                   readOnly: true,
+                                   value: this.props.audioDevice ?
+                                       this.props.audioDevice.text : 'None'
+                               })
+                              ),
+                            cE(rB.Col, {sm: 2, xs: 4},
+                               cE(rB.Button, {onClick: this.doDevice}, 'Update')
+                              )
+                           ),
+
+                         // 4
                          cE(rB.FormGroup, {controlId: 'startedId', key: 6344},
                            cE(rB.Col, {sm: 4, xs: 12},
                               cE(rB.ControlLabel, null, 'Expires at')
@@ -153,12 +211,9 @@ class VideoModal extends React.Component {
                                                 1000)).toLocaleString() :
                                       ''
                               })
-                             ),
-                           cE(rB.Col, {sm: 2, xs: 4},
-                              cE(rB.Button, {onClick: this.doStop}, 'Stop')
                              )
                            ),
-                         // 3
+                         // 5
                          cE(rB.FormGroup, {controlId: 'stoppedId', key: 6844},
                            cE(rB.Col, {sm: 4, xs: 12},
                               cE(rB.ControlLabel, null, 'Duration(sec)')
@@ -170,18 +225,23 @@ class VideoModal extends React.Component {
                                   onKeyPress: this.submitStart,
                                   type: 'text'
                               })
-                             ),
-                           cE(rB.Col, {sm: 2, xs: 4},
-                              cE(rB.Button, {onClick: this.doStart}, 'Start')
                              )
-                           ),
+                           )
                      ].filter((x, i) => isVisible[i])
                        ),
                      cE(rB.Modal.Footer, null,
-                        cE(rB.ButtonGroup, null,
-                           cE(rB.Button, {onClick: this.invite}, 'Invite'),
-                           cE(rB.Button, {onClick: this.doDismiss,
-                                          bsStyle: 'danger'}, 'Dismiss')
+                        cE(rB.ButtonGroup, null, [
+                            cE(rB.Button, {onClick: this.doDismiss, key: 2233,
+                                           bsStyle: 'primary'}, 'Dismiss'),
+                            cE(rB.Button, {onClick: this.doReset, key: 2234,
+                                           bsStyle: 'danger'}, 'Reset'),
+                            cE(rB.Button, {onClick: this.invite, key: 112,
+                                           bsStyle: 'primary'}, 'Invite'),
+                            cE(rB.Button, {onClick: this.doStop, key: 1121,
+                                           bsStyle: 'danger'}, 'Stop'),
+                            cE(rB.Button, {onClick: this.doStart, key: 1181,
+                                          bsStyle: 'danger'}, 'Start')
+                        ].filter((x, i) => isButtonVisible[i])
                           )
                        )
                     )

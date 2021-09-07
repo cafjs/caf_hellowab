@@ -8,6 +8,7 @@ const DisplayError = require('./DisplayError');
 const DisplayURL = require('./DisplayURL');
 const Iframe = require('./Iframe');
 const VideoModal = require('./VideoModal');
+const DevicesModal = require('./DevicesModal');
 const VideoMenu = require('./VideoMenu');
 const TalkingHead = require('./TalkingHead');
 
@@ -50,12 +51,19 @@ class MyApp extends React.Component {
                       ctx: this.props.ctx,
                       invite: this.state.invite
                   }),
+                  cE(DevicesModal, {
+                      ctx: this.props.ctx,
+                      devicesInfo: this.state.devicesInfo,
+                      showDevicesModal: this.state.showDevicesModal,
+                  }),
                   cE(VideoModal, {
                       ctx: this.props.ctx,
                       showVideoModal: this.state.showVideoModal,
                       isKeyAPI: this.state.isKeyAPI,
                       status: this.state.status,
-                      activeRoomExpires: this.state.activeRoomExpires
+                      activeRoomExpires: this.state.activeRoomExpires,
+                      videoDevice: this.state.videoDevice,
+                      audioDevice: this.state.audioDevice
                   }),
                   cE(Iframe, {
                       ctx: this.props.ctx,
@@ -69,6 +77,8 @@ class MyApp extends React.Component {
                       userId: this.state.userId,
                       activeRoomURL: this.state.activeRoomURL,
                       status: this.state.status,
+                      videoDevice: this.state.videoDevice,
+                      audioDevice: this.state.audioDevice
                   })
                  );
     }
