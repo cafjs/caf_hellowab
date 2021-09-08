@@ -4,12 +4,7 @@ const rB = require('react-bootstrap');
 const cE = React.createElement;
 const AppActions = require('../actions/AppActions');
 
-const STATUS = {
-    STARTING: 'Starting',
-    STARTED: 'Started',
-    STOPPING: 'Stopping',
-    STOPPED: 'Stopped'
-};
+const STATUS = require('./stateConstants');
 
 class VideoModal extends React.Component {
 
@@ -92,6 +87,9 @@ class VideoModal extends React.Component {
             AppActions.setError(this.props.ctx, new Error('Invalid duration'));
         } else {
             AppActions.startVideoSession(this.props.ctx, duration);
+            // no stalling for the main client
+            AppActions.setLocalState(this.props.ctx, {showStartModal: false,
+                                                      joining: true});
         }
     }
 

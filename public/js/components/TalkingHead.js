@@ -162,7 +162,8 @@ class TalkingHead extends React.Component {
                       activeRoomURL: this.props.activeRoomURL,
                       roomStatus: this.props.status,
                       videoDevice: this.props.videoDevice,
-                      audioDevice: this.props.audioDevice
+                      audioDevice: this.props.audioDevice,
+                      joining: this.props.joining
                   })
                  );
     }

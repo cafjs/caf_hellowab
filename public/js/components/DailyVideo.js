@@ -110,7 +110,7 @@ class DailyVideo extends React.Component {
         this.updateInputs();
 
         if ((this.props.roomStatus === ROOM_STATUS.STARTED) &&
-            this.props.activeRoomURL) {
+            this.props.activeRoomURL && this.props.joining) {
             /* IDLE->JOINING->JOINED->REGISTERED
                ERROR never recovers.
                No explicit 'leave meeting', keep callObject until unmount.
@@ -143,6 +143,13 @@ class DailyVideo extends React.Component {
                                 // Do not echo...
                                 // audioTrack = x.audioTrack;
                             } else {
+                                if (x.tracks.video.state === 'loading') {
+                                    // ensure that we retry
+                                    setTimeout(() =>
+                                               this.setState({
+                                                   counter: this.state.counter +
+                                                       1}), 100);
+                                }
                                 videoTrack = x.tracks.video.track;
                                 audioTrack = x.tracks.audio.track;
                             }

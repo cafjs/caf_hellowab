@@ -7,7 +7,8 @@ const AppReducer = function(state, action) {
         return  {showVideoModal: false, isKeyAPI: false, status: '',
                  activeRoomExpires: 0, activeRoomURL: null,
                  isClosed: false, userId: null, videoDevice: null,
-                 audioDevice: null, devicesInfo: [],
+                 audioDevice: null, devicesInfo: [], joining: false,
+                 showStartModal: true,
                  invite: false};
     } else {
         switch(action.type) {
