@@ -49,8 +49,9 @@ class DailyVideo extends React.Component {
         case 'error':
             console.log(event);
             this.setState({status: STATUS.ERROR});
-            AppActions.setError(this.props.ctx,
-                                new Error('Disconnected, please reload'));
+            const err = new Error('Disconnected, please reload');
+            err['reload'] = true;
+            AppActions.setError(this.props.ctx, err);
             break;
         default:
             break;

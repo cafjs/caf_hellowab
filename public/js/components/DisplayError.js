@@ -14,9 +14,16 @@ class DisplayError extends React.Component {
 
     doDismissError(ev) {
         AppActions.resetError(this.props.ctx);
+        if (this.props.error && this.props.error.reload) {
+            window.location.reload();
+        }
     }
 
     render() {
+        const buttonMsg = this.props.error && this.props.error.reload ?
+              'Reload' :
+              'Continue';
+
         return cE(rB.Modal, {show: !!this.props.error,
                              onHide: this.doDismissError,
                              animation: false},
@@ -32,7 +39,7 @@ class DisplayError extends React.Component {
                         this.props.error && this.props.error.message)
                     ),
                   cE(rB.Modal.Footer, null,
-                     cE(rB.Button, {onClick: this.doDismissError}, 'Continue')
+                     cE(rB.Button, {onClick: this.doDismissError}, buttonMsg)
                     )
                  );
     }
