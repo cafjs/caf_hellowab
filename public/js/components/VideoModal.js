@@ -86,6 +86,7 @@ class VideoModal extends React.Component {
         if (isNaN(duration)) {
             AppActions.setError(this.props.ctx, new Error('Invalid duration'));
         } else {
+            this.doDismiss();
             AppActions.startVideoSession(this.props.ctx, duration);
             // no stalling for the main client
             AppActions.setLocalState(this.props.ctx, {showStartModal: false,
@@ -104,18 +105,20 @@ class VideoModal extends React.Component {
     render() {
         const keyMsg = this.props.isKeyAPI ? 'Key OK' : 'Key Missing';
 
+        const primary = !!this.props.isPrimary;
+
         const isVisible = (this.props.status === STATUS.STARTED ?
-                           [true, true, true, true, true, false] :
+                           [true, primary, true, true, true, false] :
                            (this.props.status === STATUS.STOPPED ?
-                            [true, true, true, true, false, true] :
-                            [true, true, true, true, false, false])
+                            [true, primary, true, true, false, primary] :
+                            [true, primary, true, true, false, false])
                           );
 
         const isButtonVisible = (this.props.status === STATUS.STARTED ?
-                                 [true, true, true, true, false] :
+                                 [true, primary, primary, primary, false] :
                                  (this.props.status === STATUS.STOPPED ?
-                                  [true, true, true, false, true] :
-                                  [true, true, true, false, false])
+                                  [true, primary, primary, false, primary] :
+                                  [true, primary, primary, false, false])
                                 );
 
         return cE(rB.Modal, {show: this.props.showVideoModal,

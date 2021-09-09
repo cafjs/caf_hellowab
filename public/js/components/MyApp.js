@@ -69,6 +69,7 @@ class MyApp extends React.Component {
                       ctx: this.props.ctx,
                       showVideoModal: this.state.showVideoModal,
                       isKeyAPI: this.state.isKeyAPI,
+                      isPrimary: this.state.isPrimary,
                       status: this.state.status,
                       activeRoomExpires: this.state.activeRoomExpires,
                       videoDevice: this.state.videoDevice,

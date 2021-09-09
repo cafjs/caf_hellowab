@@ -4,10 +4,11 @@ const rB = require('react-bootstrap');
 const cE = React.createElement;
 const AppActions = require('../actions/AppActions');
 
+const NO_DEVICE = 'None';
 
 const filterDevices = function(devicesInfo) {
-    const video = [];
-    const audio = [];
+    const video = [{deviceId: null, text: NO_DEVICE}];
+    const audio = [{deviceId: null, text: NO_DEVICE}];
     devicesInfo.forEach((deviceInfo) => {
         if (deviceInfo.kind === 'audioinput') {
             const option = {
@@ -40,7 +41,6 @@ class DevicesModal extends React.Component {
         };
     }
 
-
     componentDidUpdate(prevProps) {
         if (!prevProps.showDevicesModal && this.props.showDevicesModal) {
             console.log('Updating');
@@ -55,12 +55,18 @@ class DevicesModal extends React.Component {
 
     onChangeAudio(ev) {
         const audioDevice = this.state.audio[ev.target.value];
-        AppActions.setLocalState(this.props.ctx, {audioDevice});
+        const value = audioDevice.text === NO_DEVICE ?
+            {audioDevice: null} :
+            {audioDevice};
+        AppActions.setLocalState(this.props.ctx, value);
     }
 
     onChangeVideo(ev) {
         const videoDevice = this.state.video[ev.target.value];
-        AppActions.setLocalState(this.props.ctx, {videoDevice});
+        const value = videoDevice.text === NO_DEVICE ?
+            {videoDevice: null} :
+            {videoDevice};
+        AppActions.setLocalState(this.props.ctx, value);
     }
 
     render() {
