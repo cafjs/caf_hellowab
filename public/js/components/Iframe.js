@@ -32,7 +32,9 @@ class Iframe extends React.Component {
             const pURL = cli.patchURL(window.location.href, options);
             const myURL = urlParser.parse(pURL);
             const userSession = 'session=user';
-            myURL.pathname = '/user' + myURL.pathname;
+            if (myURL.pathname.indexOf('/user/') < 0) {
+                myURL.pathname = '/user' + myURL.pathname;
+            }
             myURL.hash = myURL.hash.replace('session=default', 'session=user');
             delete myURL.search; // no cacheKey
             return urlParser.format(myURL);

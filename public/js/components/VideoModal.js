@@ -86,11 +86,16 @@ class VideoModal extends React.Component {
         if (isNaN(duration)) {
             AppActions.setError(this.props.ctx, new Error('Invalid duration'));
         } else {
-            this.doDismiss();
-            AppActions.startVideoSession(this.props.ctx, duration);
-            // no stalling for the main client
-            AppActions.setLocalState(this.props.ctx, {showStartModal: false,
-                                                      joining: true});
+            if (this.props.isKeyAPI) {
+                this.doDismiss();
+                AppActions.startVideoSession(this.props.ctx, duration);
+                // no stalling for the main client
+                AppActions.setLocalState(this.props.ctx, {showStartModal: false,
+                                                          joining: true});
+            } else {
+                AppActions.setError(this.props.ctx, new Error('Set the daily' +
+                                                              ' key first'));
+            }
         }
     }
 
