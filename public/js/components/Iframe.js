@@ -12,6 +12,23 @@ class Iframe extends React.Component {
     constructor(props) {
         super(props);
         this.computeURL = this.computeURL.bind(this);
+        this.state = {
+            version: 1
+        };
+    }
+
+    componentDidUpdate(prevProps) {
+        let needUpdate = (prevProps.wab && !this.props.wab) ||
+            (!prevProps.wab && this.props.wab);
+
+        if (prevProps.wab && this.props.wab) {
+            needUpdate = (prevProps.wab.app !== this.props.wab.app) ||
+                (prevProps.wab.token !== this.props.wab.token);
+        }
+
+        if (needUpdate) {
+            this.setState({version: this.state.version + 1});
+        }
     }
 
     computeURL() {
@@ -37,6 +54,9 @@ class Iframe extends React.Component {
             }
             myURL.hash = myURL.hash.replace('session=default', 'session=user');
             delete myURL.search; // no cacheKey
+            // force reload when only the fragment changes
+            myURL.search = `?dummyVersion=${this.state.version}`;
+
             return urlParser.format(myURL);
         } else {
             return DEFAULT_URL;
