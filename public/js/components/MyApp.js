@@ -77,6 +77,7 @@ class MyApp extends React.Component {
                   }),
                   cE(Iframe, {
                       ctx: this.props.ctx,
+                      isPrimary: this.state.isPrimary,
                       wab: this.state.wab
                   }),
                   cE(VideoMenu, {

@@ -53,10 +53,13 @@ class Iframe extends React.Component {
                 myURL.pathname = '/user' + myURL.pathname;
             }
             myURL.hash = myURL.hash.replace('session=default', 'session=user');
+            if (this.props.isPrimary) {
+                myURL.hash =  myURL.hash + '&isPrimary=true';
+            }
+
             delete myURL.search; // no cacheKey
             // force reload when only the fragment changes
             myURL.search = `?dummyVersion=${this.state.version}`;
-
             return urlParser.format(myURL);
         } else {
             return DEFAULT_URL;
