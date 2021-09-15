@@ -5,6 +5,7 @@ const cE = React.createElement;
 const AppActions = require('../actions/AppActions');
 
 const STATUS = require('./stateConstants');
+const videoUtils = require('./videoUtils');
 
 class VideoModal extends React.Component {
 
@@ -45,15 +46,8 @@ class VideoModal extends React.Component {
     }
 
     async doDevice(ev) {
-        // enumerateDevices() need user interaction
         try {
-            // trigger user permission ack to enable enumeration
-            const stream = await navigator.mediaDevices
-                  .getUserMedia({audio: true, video: true});
-            const devicesInfo = await navigator.mediaDevices
-                  .enumerateDevices();
-            stream.getTracks().forEach((track) => track.stop());
-
+            const devicesInfo =  await videoUtils.getDevicesInfo();
             AppActions.setLocalState(this.props.ctx, {devicesInfo});
             AppActions.setLocalState(this.props.ctx, {showDevicesModal: true});
         } catch (err) {

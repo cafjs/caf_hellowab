@@ -5,16 +5,7 @@ const rB = require('react-bootstrap');
 const cE = React.createElement;
 const AppActions = require('../actions/AppActions');
 const STATUS = require('./stateConstants');
-
-const getDevicesInfo = async () => {
-    // trigger user permission ack to enable enumeration
-    const stream = await navigator.mediaDevices
-          .getUserMedia({audio: true, video: true});
-    const devicesInfo = await navigator.mediaDevices
-          .enumerateDevices();
-    stream.getTracks().forEach((track) => track.stop());
-    return devicesInfo;
-};
+const videoUtils = require('./videoUtils');
 
 class StartModal extends React.Component {
 
@@ -31,7 +22,7 @@ class StartModal extends React.Component {
 
     async doDevice(ev) {
         try {
-            const devicesInfo = await getDevicesInfo();
+            const devicesInfo = await videoUtils.getDevicesInfo();
             AppActions.setLocalState(this.props.ctx, {devicesInfo});
             AppActions.setLocalState(this.props.ctx, {showDevicesModal: true});
         } catch (err) {
@@ -42,7 +33,7 @@ class StartModal extends React.Component {
 
     async doJoin(ev) {
         try {
-            const devicesInfo = await getDevicesInfo();
+            const devicesInfo = await videoUtils.getDevicesInfo();
             AppActions.setLocalState(this.props.ctx, {devicesInfo});
             AppActions.setLocalState(this.props.ctx, {joining: true});
             this.doDismiss();
