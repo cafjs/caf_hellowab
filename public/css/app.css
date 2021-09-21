@@ -48,3 +48,9 @@
     z-index: -1003;
     pointer-events: none;
 }
+
+.mediapipe-canvas {
+    width: 1280px;
+    height: 720px;
+    display: none;
+}

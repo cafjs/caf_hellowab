@@ -13,6 +13,7 @@
        "redux": "^3.7.2",
        "keymirror": "^0.1.0",
        "@daily-co/daily-js" : "^0.18.0",
+       "@mediapipe/selfie_segmentation" : "^0.1.162949432",
        "three": "^0.131.3"
     },
     "devDependencies": {
