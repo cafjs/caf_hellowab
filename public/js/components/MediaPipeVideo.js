@@ -4,24 +4,13 @@ const React = require('react');
 const rB = require('react-bootstrap');
 const cE = React.createElement;
 const AppActions = require('../actions/AppActions');
-
+const {requestFrame, cancelFrame} = require('./videoUtils');
 const SelfieSegmentation = require('@mediapipe/selfie_segmentation')
       .SelfieSegmentation;
 
 // 720p camera
 const VIDEO_WIDTH = 1280;
 const VIDEO_HEIGHT = 720;
-
-const requestFrame = (video, callback) =>
-    ('requestVideoFrameCallback' in window.HTMLVideoElement.prototype) ?
-      video.requestVideoFrameCallback(callback) :
-      requestAnimationFrame(callback);
-
-const cancelFrame = (video, handle) =>
-      ('cancelVideoFrameCallback' in window.HTMLVideoElement.prototype) ?
-      video.cancelVideoFrameCallback(handle) :
-      cancelAnimationFrame(handle);
-
 
 class MediaPipeVideo extends React.Component {
 
@@ -42,7 +31,6 @@ class MediaPipeVideo extends React.Component {
             locateFile: (file) => `{{__CDN__}}/mediapipe/${file}`
         });
         this.selfieSegmentation.setOptions({
-//            useCpuInference: true,
             selfieMode: true,
             modelSelection: 1 // landscape
         });
@@ -96,12 +84,12 @@ class MediaPipeVideo extends React.Component {
                 });
             const fps = this.stream.getTracks()[0].getSettings().frameRate;
             const canvas = this.canvasRef.current;
-            const outVideoStream = canvas.captureStream(fps);
-            AppActions.setLocalState(this.props.ctx, {outVideoStream});
+//            const outVideoStream = canvas.captureStream(fps);
+//            AppActions.setLocalState(this.props.ctx, {outVideoStream});
 
             this.video = document.createElement('video');
             //this.video.autoplay = true;
-            //this.video.muted = true;
+            this.video.muted = true;
             this.video.srcObject = this.stream;
             this.video.onloadedmetadata = async () => {
                 this.video.play();
@@ -156,7 +144,8 @@ class MediaPipeVideo extends React.Component {
 
     render() {
         return cE('canvas', {
-            ref: this.canvasRef, className: 'mediapipe-canvas'
+            ref: this.canvasRef, className: 'mediapipe-canvas',
+            height: VIDEO_HEIGHT, width: VIDEO_WIDTH
         });
     }
 }

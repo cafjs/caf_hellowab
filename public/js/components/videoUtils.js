@@ -15,3 +15,14 @@ exports.getDevicesInfo = async () => {
     stream && stream.getTracks().forEach((track) => track.stop());
     return devicesInfo;
 };
+
+
+exports.requestFrame = (video, callback) =>
+    ('requestVideoFrameCallback' in window.HTMLVideoElement.prototype) ?
+      video.requestVideoFrameCallback(callback) :
+      requestAnimationFrame(callback);
+
+exports.cancelFrame = (video, handle) =>
+      ('cancelVideoFrameCallback' in window.HTMLVideoElement.prototype) ?
+      video.cancelVideoFrameCallback(handle) :
+      cancelAnimationFrame(handle);

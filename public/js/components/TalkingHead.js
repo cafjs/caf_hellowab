@@ -7,6 +7,7 @@ const AppActions = require('../actions/AppActions');
 const THREE = require('three');
 const DailyVideo = require('./DailyVideo');
 const MediaPipeVideo = require('./MediaPipeVideo');
+const {requestFrame, cancelFrame} = require('./videoUtils');
 
 const FRUSTUM = 2;
 const VIDEO_ASPECT = 16/9; //720p, 1080p,...
@@ -84,7 +85,8 @@ class TalkingHead extends React.Component {
 
     animate() {
         this.renderer.render(this.scene, this.camera);
-        this.frameId = window.requestAnimationFrame(this.animate);
+        const video = this.videoRef.current;
+        this.frameId = requestFrame(video, this.animate);
     }
 
     componentDidMount() {
@@ -138,13 +140,14 @@ class TalkingHead extends React.Component {
         this.scene.add(mesh);
 
         if (!this.frameId) {
-            this.frameId = window.requestAnimationFrame(this.animate);
+            this.frameId = requestFrame(video, this.animate);
             window.addEventListener('resize', this.onWindowResize);
         }
     }
 
     componentWillUnmount() {
-        this.frameId && cancelAnimationFrame(this.frameId);
+        const video = this.videoRef.current;
+        this.frameId && cancelFrame(video, this.frameId);
         this.frameId = null;
         window.removeEventListener('resize', this.onWindowResize);
     }
