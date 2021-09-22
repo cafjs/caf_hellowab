@@ -34,6 +34,7 @@ class DevicesModal extends React.Component {
         this.doDismiss = this.doDismiss.bind(this);
         this.onChangeVideo = this.onChangeVideo.bind(this);
         this.onChangeAudio = this.onChangeAudio.bind(this);
+        this.handleGreen = this.handleGreen.bind(this);
 
         this.state = {
             video: [],
@@ -51,6 +52,10 @@ class DevicesModal extends React.Component {
 
     doDismiss(ev) {
         AppActions.setLocalState(this.props.ctx, {showDevicesModal: false});
+    }
+
+    handleGreen(e) {
+        AppActions.setLocalState(this.props.ctx, {isMediaPipe: (e === 1)});
     }
 
     onChangeAudio(ev) {
@@ -114,8 +119,23 @@ class DevicesModal extends React.Component {
                                   optionsFrom(this.state.video)
                                  )
                               )
-                           )
-                     ]
+                           ),
+                         cE(rB.FormGroup, {controlId: 'greenId', key: 9944},
+                             cE(rB.Col, {sm: 4, xs: 12},
+                               cE(rB.ControlLabel, null, 'Green Screen')
+                               ),
+                            cE(rB.Col, {sm: 8, xs: 8},
+                               cE(rB.ToggleButtonGroup, {
+                                   type: 'radio',
+                                   name : 'daemon',
+                                   value: this.props.isMediaPipe ? 1 : 0,
+                                   onChange: this.handleGreen
+                               },
+                                  cE(rB.ToggleButton, {value: 0}, 'Off'),
+                                  cE(rB.ToggleButton, {value: 1}, 'On')
+                                 )
+                              )
+                           )                     ]
                        )
                     ),
                   cE(rB.Modal.Footer, null,

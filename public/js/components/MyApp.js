@@ -64,6 +64,7 @@ class MyApp extends React.Component {
                       ctx: this.props.ctx,
                       devicesInfo: this.state.devicesInfo,
                       showDevicesModal: this.state.showDevicesModal,
+                      isMediaPipe: this.state.isMediaPipe
                   }),
                   cE(VideoModal, {
                       ctx: this.props.ctx,
@@ -90,7 +91,9 @@ class MyApp extends React.Component {
                       status: this.state.status,
                       videoDevice: this.state.videoDevice,
                       audioDevice: this.state.audioDevice,
-                      joining: this.state.joining
+                      joining: this.state.joining,
+                      isMediaPipe: this.state.isMediaPipe,
+                      outVideoStream: this.state.outVideoStream
                   })
                  );
     }

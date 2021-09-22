@@ -8,8 +8,8 @@ const AppReducer = function(state, action) {
                  activeRoomExpires: 0, activeRoomURL: null,
                  isClosed: false, userId: null, videoDevice: null,
                  audioDevice: null, devicesInfo: [], joining: false,
-                 showStartModal: true, isPrimary: false,
-                 invite: false};
+                 showStartModal: true, isPrimary: false, outVideoStream: null,
+                 invite: false, isMediaPipe: false};
     } else {
         switch(action.type) {
         case AppConstants.APP_UPDATE:

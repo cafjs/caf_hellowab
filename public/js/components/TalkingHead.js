@@ -6,6 +6,7 @@ const cE = React.createElement;
 const AppActions = require('../actions/AppActions');
 const THREE = require('three');
 const DailyVideo = require('./DailyVideo');
+const MediaPipeVideo = require('./MediaPipeVideo');
 
 const FRUSTUM = 2;
 const VIDEO_ASPECT = 16/9; //720p, 1080p,...
@@ -154,10 +155,17 @@ class TalkingHead extends React.Component {
                                ref: this.videoRef, className: 'video-canvas'}),
                   cE('audio', {autoPlay: true, playsInline: true,
                                ref: this.soundRef}),
+                  cE(MediaPipeVideo, {
+                      ctx: this.props.ctx,
+                      videoDevice: this.props.videoDevice,
+                      isMediaPipe: this.props.isMediaPipe,
+                      outVideoStream: this.props.outVideoStream
+                  }),
                   cE(DailyVideo, {
                       ctx: this.props.ctx,
                       soundRef: this.soundRef,
                       videoRef: this.videoRef,
+                      outVideoStream: this.props.outVideoStream,
                       userId: this.props.userId,
                       activeRoomURL: this.props.activeRoomURL,
                       roomStatus: this.props.status,

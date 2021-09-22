@@ -52,5 +52,5 @@
 .mediapipe-canvas {
     width: 1280px;
     height: 720px;
-    display: none;
+    display: block;
 }

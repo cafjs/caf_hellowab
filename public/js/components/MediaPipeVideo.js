@@ -42,6 +42,7 @@ class MediaPipeVideo extends React.Component {
             locateFile: (file) => `{{__CDN__}}/mediapipe/${file}`
         });
         this.selfieSegmentation.setOptions({
+//            useCpuInference: true,
             selfieMode: true,
             modelSelection: 1 // landscape
         });
@@ -76,6 +77,7 @@ class MediaPipeVideo extends React.Component {
     async onFrame() {
         if (this.video) {
             await this.selfieSegmentation.send({image: this.video});
+            this.frameId = requestFrame(this.video, this.onFrame);
         }
     }
 
@@ -92,12 +94,20 @@ class MediaPipeVideo extends React.Component {
                         height: VIDEO_HEIGHT
                     }
                 });
+            const fps = this.stream.getTracks()[0].getSettings().frameRate;
+            const canvas = this.canvasRef.current;
+            const outVideoStream = canvas.captureStream(fps);
+            AppActions.setLocalState(this.props.ctx, {outVideoStream});
 
             this.video = document.createElement('video');
-            this.video.autoplay = true;
-            this.video.muted = true;
+            //this.video.autoplay = true;
+            //this.video.muted = true;
             this.video.srcObject = this.stream;
-            this.frameId = requestFrame(this.video, this.onFrame);
+            this.video.onloadedmetadata = async () => {
+                this.video.play();
+                await this.selfieSegmentation.initialize();
+                this.frameId = requestFrame(this.video, this.onFrame);
+            };
         }
     }
 
@@ -109,11 +119,34 @@ class MediaPipeVideo extends React.Component {
             this.stream && this.stream.getTracks()
                 .forEach((track) => track.stop());
             this.stream = null;
+            this.selfieSegmentation.reset();
+            if (this.props.outVideoStream) {
+                this.props.outVideoStream.getTracks()
+                    .forEach((track) => track.stop());
+                AppActions.setLocalState(this.props.ctx,
+                                         {outVideoStream: null});
+            }
         }
     }
 
     componentDidMount() {
         this.startVideo();
+    }
+
+    componentDidUpdate(prevProps) {
+        const deviceChanged = (prevDev, dev) => (prevDev && !dev) ||
+              (!prevDev && dev) || (prevDev && dev &&
+                                    (prevDev.deviceId !== dev.deviceId));
+
+        if (this.props.isMediaPipe) {
+            if (deviceChanged(prevProps.videoDevice, this.props.videoDevice)) {
+                this.stopVideo();
+            }
+            // idempotent...
+            this.startVideo();
+        } else {
+            this.stopVideo();
+        }
     }
 
     componentWillUnmount() {
@@ -122,7 +155,9 @@ class MediaPipeVideo extends React.Component {
     }
 
     render() {
-        cE('canvas', {ref: this.canvasRef, className: 'mediapipe-canvas'});
+        return cE('canvas', {
+            ref: this.canvasRef, className: 'mediapipe-canvas'
+        });
     }
 }
 
