@@ -3,7 +3,8 @@
 exports.getDevicesInfo = async () => {
     // trigger user permission ack to enable enumeration
     let stream = null;
-    if (typeof navigator.permissions.requestAll === 'function') {
+    if (navigator.permissions &&
+        (typeof navigator.permissions.requestAll === 'function')) {
         await navigator.permissions.requestAll([{name:'camera'},
                                                 {name:'microphone'}]);
     } else {
