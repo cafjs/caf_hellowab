@@ -115,7 +115,6 @@ class TalkingHead extends React.Component {
         this.camera.position.x = xOffset;
         this.scene = new THREE.Scene();
 
-        // const video = document.getElementById('video-head');
         const video = this.videoRef.current;
         this.texture = new THREE.VideoTexture(video);
         this.texture.minFilter = THREE.LinearFilter;
@@ -168,6 +167,7 @@ class TalkingHead extends React.Component {
                       ctx: this.props.ctx,
                       soundRef: this.soundRef,
                       videoRef: this.videoRef,
+                      isMediaPipe: this.props.isMediaPipe,
                       outVideoStream: this.props.outVideoStream,
                       userId: this.props.userId,
                       activeRoomURL: this.props.activeRoomURL,

@@ -30,6 +30,7 @@ class DailyVideo extends React.Component {
             counter: 0
         };
         this.videoDeviceId = null;
+        this.videoSource = null;
         this.audioDeviceId = null;
 
         this.updateInputs = this.updateInputs.bind(this);
@@ -64,11 +65,92 @@ class DailyVideo extends React.Component {
     }
 
     updateInputs() {
+        /* Video has three states: NONE, DEVICE_ID, and SRC
+         * depending on whether we use the mediapipe green screen or not.
+         *
+         * The states are encoded using videoDeviceId and videoSource, i.e.,
+         *
+         * NONE -> (videoDeviceId = null, videoSource = null)
+         * DEVICE_ID -> (videoDeviceId = number, videoSource = null)
+         * SRC -> (videoDeviceId = null, videoSource = MediaStream)
+         *
+         * We have to handle 8 state transitions:
+         *
+         * NONE -> DEVICE_ID   if !isMediaPipe && deviceId
+         * NONE -> SRC         if isMediaPipe && outVideoStream
+         * DEVICE_ID -> NONE   if (isMediaPipe && !outVideoStream) ||
+         *                        (!isMediaPipe && !deviceId)
+         * DEVICE_ID -> SRC    if isMediaPipe && outVideoStream
+         * DEVICE_ID -> DEVICE_ID if !isMediaPipe && (deviceId !==videoDeviceId)
+         * SRC-> NONE          if (!isMediaPipe && !deviceId) ||
+         *                        (isMediaPipe && !outVideoStream)
+         * SRC -> DEVICE_ID    if (!isMediaPipe && deviceId)
+         * SRC -> SRC          if (isMediaPipe && (outVideoStream!==videoSource)
+         *
+         * And they will trigger an update with the new state...
+         */
         let doUpdate = false;
-        if (this.props.videoDevice &&
-            (this.props.videoDevice.deviceId !== this.videoDeviceId)) {
-            this.videoDeviceId = this.props.videoDevice.deviceId;
-            doUpdate = true;
+
+        if (!this.videoDeviceId && !this.videoSource) {
+            // State NONE
+            if (!this.props.isMediaPipe && this.props.videoDevice &&
+                this.props.videoDevice.deviceId) {
+                // to DEVICE_ID
+                this.videoDeviceId = this.props.videoDevice.deviceId;
+                doUpdate = true;
+            }
+            if (this.props.isMediaPipe && this.props.outVideoStream) {
+                // to SRC
+                this.videoSource = this.props.outVideoStream;
+                doUpdate = true;
+            }
+        } else if (this.videoDeviceId && !this.videoSource) {
+            // State DEVICE_ID
+            if ((this.props.isMediaPipe && !this.props.outVideoStream) ||
+                (!this.props.isMediaPipe &&
+                 !(this.props.videoDevice &&
+                   this.props.videoDevice.deviceId))) {
+                // to NONE
+                this.videoDeviceId = null;
+                doUpdate = true;
+            }
+            if (this.props.isMediaPipe && this.props.outVideoStream) {
+                // to SRC
+                this.videoDeviceId = null;
+                this.videoSource = this.props.outVideoStream;
+                doUpdate = true;
+            }
+            if (!this.props.isMediaPipe && this.props.videoDevice &&
+                (this.videoDeviceId !== this.props.videoDevice.deviceId)) {
+                // to DEVICE_ID
+                this.videoDeviceId = this.props.videoDevice.deviceId;
+                doUpdate = true;
+            }
+        } else if (!this.videoDeviceId && this.videoSource) {
+            // State SRC
+            if ((!this.props.isMediaPipe &&
+                 !(this.props.videoDevice &&
+                   this.props.videoDevice.deviceId)) ||
+                (this.props.isMediaPipe && !this.props.outVideoStream)) {
+                // to NONE
+                this.videoSource = null;
+                doUpdate = true;
+            }
+            if (!this.props.isMediaPipe && (this.props.videoDevice &&
+                                            this.props.videoDevice.deviceId)) {
+                // to DEVICE_ID
+                this.videoDeviceId = this.props.videoDevice.deviceId;
+                this.videoSource = null;
+                doUpdate = true;
+            }
+            if (this.props.isMediaPipe &&
+                (this.props.outVideoStream !== this.videoSource)) {
+                // to SRC
+                this.videoSource = this.props.outVideoStream;
+                doUpdate = true;
+            }
+        } else {
+            throw new Error('BUG: Invalid state in input');
         }
 
         if (this.props.audioDevice &&
@@ -82,12 +164,15 @@ class DailyVideo extends React.Component {
                 {videoDeviceId: this.videoDeviceId} :
                 {};
 
+            if (this.videoSource) {
+                update['videoSource'] = this.videoSource.getVideoTracks()[0];
+            }
+
             if (this.audioDeviceId) {
                 update['audioDeviceId'] = this.audioDeviceId;
             }
             this.callObject.setInputDevicesAsync(update);
         }
-
     }
 
     componentDidMount() {
@@ -113,7 +198,7 @@ class DailyVideo extends React.Component {
         if ((this.props.roomStatus === ROOM_STATUS.STARTED) &&
             this.props.activeRoomURL && this.props.joining) {
             /* IDLE->JOINING->JOINED->REGISTERED
-               ERROR never recovers.
+               ERROR never recovers, i.e., client reloads.
                No explicit 'leave meeting', keep callObject until unmount.
              */
             switch(this.state.status) {

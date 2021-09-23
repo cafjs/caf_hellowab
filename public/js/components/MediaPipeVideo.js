@@ -11,6 +11,7 @@ const SelfieSegmentation = require('@mediapipe/selfie_segmentation')
 // 720p camera
 const VIDEO_WIDTH = 1280;
 const VIDEO_HEIGHT = 720;
+const DEFAUL_FPS = 25;
 
 class MediaPipeVideo extends React.Component {
 
@@ -20,12 +21,11 @@ class MediaPipeVideo extends React.Component {
         this.video = null;
         this.stream = null;
         this.canvasRef = React.createRef();
-
+        this.fps = DEFAUL_FPS;
         this.onResults = this.onResults.bind(this);
         this.startVideo = this.startVideo.bind(this);
         this.stopVideo = this.stopVideo.bind(this);
         this.onFrame = this.onFrame.bind(this);
-
 
         this.selfieSegmentation = new SelfieSegmentation({
             locateFile: (file) => `{{__CDN__}}/mediapipe/${file}`
@@ -35,9 +35,7 @@ class MediaPipeVideo extends React.Component {
             modelSelection: 1 // landscape
         });
         this.selfieSegmentation.onResults(this.onResults);
-
     }
-
 
     onResults(results) {
         const canvas = this.canvasRef.current;
@@ -59,6 +57,10 @@ class MediaPipeVideo extends React.Component {
                 results.image, 0, 0, canvas.width, canvas.height
             );
             canvasCtx.restore();
+            if (!this.props.outVideoStream && this.props.isMediaPipe) {
+                const outVideoStream = canvas.captureStream(this.fps);
+                AppActions.setLocalState(this.props.ctx, {outVideoStream});
+            }
         }
     }
 
@@ -82,11 +84,7 @@ class MediaPipeVideo extends React.Component {
                         height: VIDEO_HEIGHT
                     }
                 });
-            const fps = this.stream.getTracks()[0].getSettings().frameRate;
-            const canvas = this.canvasRef.current;
-//            const outVideoStream = canvas.captureStream(fps);
-//            AppActions.setLocalState(this.props.ctx, {outVideoStream});
-
+            this.fps = this.stream.getTracks()[0].getSettings().frameRate;
             this.video = document.createElement('video');
             //this.video.autoplay = true;
             this.video.muted = true;
@@ -145,7 +143,7 @@ class MediaPipeVideo extends React.Component {
     render() {
         return cE('canvas', {
             ref: this.canvasRef, className: 'mediapipe-canvas',
-            height: VIDEO_HEIGHT, width: VIDEO_WIDTH
+            height: VIDEO_HEIGHT, width: VIDEO_WIDTH, style: {display: 'none'}
         });
     }
 }
