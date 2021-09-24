@@ -64,7 +64,7 @@ class TalkingHead extends React.Component {
         this.animate = this.animate.bind(this);
         this.frameId = null;
         this.soundRef = React.createRef();
-        this.videoRef = React.createRef();
+        this.videoRef = {current: null};
     }
 
     onWindowResize() {
@@ -90,6 +90,11 @@ class TalkingHead extends React.Component {
     }
 
     componentDidMount() {
+        this.videoRef.current = document.createElement('video');
+        this.videoRef.current.autoplay = true;
+        this.videoRef.current.muted = true;
+        this.videoRef.current.setAttribute('playsinline', true);
+
         const canvas = document.getElementById('canvas-head');
         this.renderer = new THREE.WebGLRenderer({
             antialias: true,
@@ -172,8 +177,6 @@ class TalkingHead extends React.Component {
 
     render() {
         return cE(React.Fragment, null,
-                  cE('video', {autoPlay: true, muted: true, playsInline: true,
-                               ref: this.videoRef, className: 'video-canvas'}),
                   cE('audio', {autoPlay: true, playsInline: true,
                                ref: this.soundRef}),
                   cE(MediaPipeVideo, {

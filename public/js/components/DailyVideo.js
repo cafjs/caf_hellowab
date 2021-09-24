@@ -239,10 +239,14 @@ class DailyVideo extends React.Component {
                                 videoTrack = x.tracks.video.track;
                                 audioTrack = x.tracks.audio.track;
                             }
-                            this.props.videoRef.current.srcObject =
-                                videoTrack ?
-                                new window.MediaStream([videoTrack]) :
-                                null;
+                            const outVideo = this.props.videoRef.current;
+                            if (videoTrack) {
+                                outVideo.srcObject =
+                                    new window.MediaStream([videoTrack]);
+                                outVideo.play();
+                            } else {
+                                outVideo.srcObject = null;
+                            }
                             this.props.soundRef.current.srcObject =
                                 audioTrack ?
                                 new window.MediaStream([audioTrack]) :
