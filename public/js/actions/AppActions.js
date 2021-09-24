@@ -70,7 +70,7 @@ const AppActions = {
 
 const EXTERNAL_METHODS = [
     'setDailyKey', 'startVideoSession', 'stopVideoSession', 'getState',
-    'setTalkingHeadId'
+    'setTalkingHeadId', 'setBlur'
 ];
 
 EXTERNAL_METHODS.forEach(function(x) {

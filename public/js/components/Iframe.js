@@ -72,7 +72,7 @@ class Iframe extends React.Component {
             id: 'page-wrap',
             // disable top-navigation
             sandbox:'allow-same-origin allow-popups allow-scripts allow-forms allow-pointer-lock allow-modals',
-            className: 'iframe-fit',
+            className: (this.props.blur ? 'iframe-blur' : 'iframe-fit'),
             frameBorder: 0,
             src: targetURL
         }, null);

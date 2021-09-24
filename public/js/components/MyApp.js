@@ -79,15 +79,19 @@ class MyApp extends React.Component {
                   cE(Iframe, {
                       ctx: this.props.ctx,
                       isPrimary: this.state.isPrimary,
-                      wab: this.state.wab
+                      wab: this.state.wab,
+                      blur: this.state.blur
                   }),
                   cE(VideoMenu, {
-                      ctx: this.props.ctx
+                      ctx: this.props.ctx,
+                      isPrimary: this.state.isPrimary,
+                      blur: this.state.blur
                   }),
                   cE(TalkingHead, {
                       ctx: this.props.ctx,
                       userId: this.state.userId,
                       activeRoomURL: this.state.activeRoomURL,
+                      blur: this.state.blur,
                       status: this.state.status,
                       videoDevice: this.state.videoDevice,
                       audioDevice: this.state.audioDevice,

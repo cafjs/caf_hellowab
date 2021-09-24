@@ -9,7 +9,7 @@ const AppReducer = function(state, action) {
                  isClosed: false, userId: null, videoDevice: null,
                  audioDevice: null, devicesInfo: [], joining: false,
                  showStartModal: true, isPrimary: false, outVideoStream: null,
-                 invite: false, isMediaPipe: false};
+                 invite: false, isMediaPipe: false, blur: false};
     } else {
         switch(action.type) {
         case AppConstants.APP_UPDATE:

@@ -135,12 +135,31 @@ class TalkingHead extends React.Component {
 
         const geometry = new THREE.PlaneGeometry(VIDEO_ASPECT*FRUSTUM/2,
                                                  FRUSTUM/2);
-        const mesh = new THREE.Mesh(geometry, material);
-        this.scene.add(mesh);
+        this.mesh = new THREE.Mesh(geometry, material);
+        this.scene.add(this.mesh);
 
         if (!this.frameId) {
             this.frameId = requestFrame(video, this.animate);
             window.addEventListener('resize', this.onWindowResize);
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (!prevProps.blur && this.props.blur) {
+            // center talking head, make it larger
+            this.camera.position.x = 0;
+            this.camera.position.y = FRUSTUM/8;
+            this.mesh.scale.set(1.5, 1.5, 1.0);
+        }
+
+        if (prevProps.blur && !this.props.blur) {
+            // undo changes, see componentDidMount()
+            this.camera.position.y = FRUSTUM/4;
+            const aspect = window.innerWidth / window.innerHeight;
+            let xOffset = FRUSTUM*(VIDEO_ASPECT - 2*aspect)/4;
+            xOffset = xOffset > 0 ? 0 : xOffset;
+            this.camera.position.x = xOffset;
+            this.mesh.scale.set(1.0, 1.0, 1.0);
         }
     }
 
