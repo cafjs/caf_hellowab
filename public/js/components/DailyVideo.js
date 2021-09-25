@@ -37,6 +37,7 @@ class DailyVideo extends React.Component {
         this.handleMeetingState = this.handleMeetingState.bind(this);
         this.handleParticipantsChange = this.handleParticipantsChange
             .bind(this);
+        // this.cameraUpdated = false; IN PROGRESS
     }
 
     handleMeetingState(event)  {
@@ -152,7 +153,12 @@ class DailyVideo extends React.Component {
         } else {
             throw new Error('BUG: Invalid state in input');
         }
-
+        /* IN PROGRESS
+        if (doUpdate  && (this.videoSource || this.videoDeviceId)) {
+            this.callObject.startCamera({url:'https://cafjs.daily.co/111111111111111111111111'});
+            this.cameraUpdated = true;
+        }
+        */
         if (this.props.audioDevice &&
             (this.props.audioDevice.deviceId !== this.audioDeviceId)) {
             this.audioDeviceId = this.props.audioDevice.deviceId;
@@ -203,6 +209,10 @@ class DailyVideo extends React.Component {
              */
             switch(this.state.status) {
             case STATUS.IDLE:
+                /* IN PROGRESS
+                if (this.callObject.participants()['local']) {
+                    this.callObject.leave();
+                }*/
                 this.callObject.join({url: this.props.activeRoomURL});
                 this.setState({status: STATUS.JOINING});
                 break;
@@ -259,6 +269,20 @@ class DailyVideo extends React.Component {
             case STATUS.ERROR:
                 // Ignore
             }
+        } else {
+            /* IN PROGRESS
+            // preview local video if available
+            const all = this.callObject.participants();
+            console.log(all);
+            const x = all && all['local'];
+            if (x && x.videoTrack && this.cameraUpdated) {
+                const outVideo = this.props.videoRef.current;
+                outVideo.srcObject =
+                    new window.MediaStream([x.videoTrack]);
+                this.cameraUpdated = false;
+                outVideo.play();
+            }
+            */
         }
     }
 
