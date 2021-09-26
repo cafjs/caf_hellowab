@@ -42,6 +42,10 @@ class MediaPipeVideo extends React.Component {
         if (canvas) {
             const canvasCtx = canvas.getContext('2d');
             canvasCtx.save();
+            // Do not mirror
+            canvasCtx.translate(canvas.width, 0);
+            canvasCtx.scale(-1, 1);
+
             canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
             canvasCtx.drawImage(results.segmentationMask, 0, 0,
                                 canvas.width, canvas.height);
@@ -56,6 +60,7 @@ class MediaPipeVideo extends React.Component {
             canvasCtx.drawImage(
                 results.image, 0, 0, canvas.width, canvas.height
             );
+
             canvasCtx.restore();
             if (!this.props.outVideoStream && this.props.isMediaPipe) {
                 const outVideoStream = canvas.captureStream(this.fps);

@@ -5,6 +5,9 @@ const cE = React.createElement;
 const AppActions = require('../actions/AppActions');
 
 const NO_DEVICE = 'None';
+// 720p camera
+const VIDEO_WIDTH = 1280;
+const VIDEO_HEIGHT = 720;
 
 const filterDevices = function(devicesInfo) {
     const video = [{deviceId: null, text: NO_DEVICE}];
@@ -38,19 +41,62 @@ class DevicesModal extends React.Component {
 
         this.state = {
             video: [],
-            audio: [] // input...
+            audio: [], // input...
+            previewOn: false
         };
+        this.videoRef = React.createRef();
+        this.previewDeviceId = null;
+        this.previewStream = null;
     }
 
-    componentDidUpdate(prevProps) {
+    async componentDidUpdate(prevProps) {
         if (!prevProps.showDevicesModal && this.props.showDevicesModal) {
             console.log('Updating');
             const [video, audio] = filterDevices(this.props.devicesInfo || []);
             this.setState({video, audio});
         }
+        if (this.videoRef.current) {
+            if (this.state.previewOn) {
+                if (this.props.isMediaPipe) {
+                    // green screen, read from canvasMediaStream
+                    this.videoRef.current.srcObject = this.props.outVideoStream;
+                } else {
+                    if (this.previewDeviceId !== this.props.videoDevice &&
+                        this.props.videoDevice.deviceId) {
+                        // changing streams
+                        if (this.previewStream) {
+                            this.previewStream.getTracks()
+                                .forEach((track) => track.stop());
+                        }
+                        this.previewDeviceId = this.props.videoDevice.deviceId;
+                        this.previewStream = await navigator.mediaDevices
+                            .getUserMedia({
+                                video: {
+                                    deviceId: {
+                                        exact: this.props.videoDevice.deviceId
+                                    },
+                                    width: VIDEO_WIDTH,
+                                    height: VIDEO_HEIGHT
+                                }
+                            });
+                        this.videoRef.current.srcObject = this.previewStream;
+                    }
+                }
+            } else {
+                // no preview
+                this.videoRef.current.srcObject = null;
+                if (this.previewStream) {
+                    this.previewStream.getTracks()
+                        .forEach((track) => track.stop());
+                    this.previewStream = null;
+                    this.previewDeviceId = null;
+                }
+            }
+        }
     }
 
     doDismiss(ev) {
+        this.setState({previewOn: false});
         AppActions.setLocalState(this.props.ctx, {showDevicesModal: false});
     }
 
@@ -70,7 +116,8 @@ class DevicesModal extends React.Component {
         const videoDevice = this.state.video[ev.target.value];
         const value = videoDevice.text === NO_DEVICE ?
             {videoDevice: null} :
-            {videoDevice};
+              {videoDevice};
+        this.setState({previewOn: !!value.videoDevice});
         AppActions.setLocalState(this.props.ctx, value);
     }
 
@@ -135,7 +182,19 @@ class DevicesModal extends React.Component {
                                   cE(rB.ToggleButton, {value: 1}, 'On')
                                  )
                               )
-                           )                     ]
+                           ),
+                         cE(rB.FormGroup, {controlId: 'vidId', key: 12944},
+                            cE('video', {
+                                autoPlay: true, muted: true, playsInline: true,
+                                ref: this.videoRef, style: {
+                                    width: '100%',
+                                    display: (this.state.previewOn ?
+                                              'block' :
+                                              'none')}
+                            }
+                              )
+                           )
+                     ]
                        )
                     ),
                   cE(rB.Modal.Footer, null,
