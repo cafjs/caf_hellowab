@@ -17,6 +17,8 @@ class StartModal extends React.Component {
     }
 
     doDismiss(ev) {
+        // do not keep any other modals open
+        AppActions.setLocalState(this.props.ctx, {showVideoModal: false});
         AppActions.setLocalState(this.props.ctx, {showStartModal: false});
     }
 

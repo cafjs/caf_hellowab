@@ -120,7 +120,10 @@ class VideoModal extends React.Component {
                                   [true, primary, primary, false, false])
                                 );
 
-        return cE(rB.Modal, {show: this.props.showVideoModal,
+        return cE(rB.Modal, {show: this.props.showVideoModal &&
+                             // give priority to StartModal
+                             !(this.props.showStartModal &&
+                               (this.props.status === STATUS.STARTED)),
                              onHide: this.doDismiss,
                              animation: false},
                   cE(rB.Modal.Header, {

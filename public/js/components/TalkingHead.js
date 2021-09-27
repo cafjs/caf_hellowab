@@ -131,8 +131,8 @@ class TalkingHead extends React.Component {
                 map: {value: this.texture},
                 keyUV: { value: KEY_UV },
                 uvOffset: {value: [0.0, 0.0]},
-                similarity: { value: 0.7 },
-                smoothness: { value: 0.0 }
+                similarity: { value: 0.5 },
+                smoothness: { value: 0.3 }
             },
             vertexShader: VERTEX_SHADER,
             fragmentShader: FRAGMENT_SHADER
@@ -142,6 +142,13 @@ class TalkingHead extends React.Component {
                                                  FRUSTUM/2);
         this.mesh = new THREE.Mesh(geometry, material);
         this.scene.add(this.mesh);
+
+        if (this.props.blur) {
+            // center talking head, make it larger
+            this.camera.position.x = 0;
+            this.camera.position.y = FRUSTUM/8;
+            this.mesh.scale.set(1.5, 1.5, 1.0);
+        }
 
         if (!this.frameId) {
             this.frameId = requestFrame(video, this.animate);
