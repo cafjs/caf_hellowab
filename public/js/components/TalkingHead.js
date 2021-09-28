@@ -131,8 +131,8 @@ class TalkingHead extends React.Component {
                 map: {value: this.texture},
                 keyUV: { value: KEY_UV },
                 uvOffset: {value: [0.0, 0.0]},
-                similarity: { value: 0.5 },
-                smoothness: { value: 0.3 }
+                similarity: { value: 0.6 },
+                smoothness: { value: 0.2 }
             },
             vertexShader: VERTEX_SHADER,
             fragmentShader: FRAGMENT_SHADER
