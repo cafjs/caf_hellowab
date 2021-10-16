@@ -31,7 +31,6 @@ class MediaPipeVideo extends React.Component {
             locateFile: (file) => `{{__CDN__}}/mediapipe/${file}`
         });
         this.selfieSegmentation.setOptions({
-            selfieMode: true,
             modelSelection: 1 // landscape
         });
         this.selfieSegmentation.onResults(this.onResults);
@@ -43,8 +42,8 @@ class MediaPipeVideo extends React.Component {
             const canvasCtx = canvas.getContext('2d');
             canvasCtx.save();
             // Do not mirror
-            canvasCtx.translate(canvas.width, 0);
-            canvasCtx.scale(-1, 1);
+            // canvasCtx.translate(canvas.width, 0);
+            // canvasCtx.scale(-1, 1);
 
             canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
             canvasCtx.drawImage(results.segmentationMask, 0, 0,

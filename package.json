@@ -1,7 +1,7 @@
 {
     "name": "hellowab",
     "description": "Web App backgrounds example with Caf.js",
-    "version": "0.4.0",
+    "version": "0.4.1",
     "dependencies": {
        "caf_react" :"^0.4.0",
        "caf_core": "^0.4.0",
@@ -13,7 +13,7 @@
        "redux": "^3.7.2",
        "keymirror": "^0.1.0",
        "@daily-co/daily-js" : "^0.18.0",
-       "@mediapipe/selfie_segmentation" : "^0.1.162949432",
+       "@mediapipe/selfie_segmentation" : "0.1.1632777926",
        "three": "^0.131.3"
     },
     "devDependencies": {
